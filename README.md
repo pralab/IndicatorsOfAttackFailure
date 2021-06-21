@@ -1,6 +1,6 @@
 # Indicators of Attack Failure: Debugging and Improving Optimization of Adversarial Examples
 
-Preprint available at [TODO]
+Preprint available at [https://arxiv.org/abs/2106.09947](https://arxiv.org/abs/2106.09947).
 
 The code is developed with [SecML](https://secml.gitlab.io/) library.
 
