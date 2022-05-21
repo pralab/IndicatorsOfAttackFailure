@@ -8,9 +8,9 @@ from src.attacks.smoothed_pgd import CFoolboxAveragedPGD
 from src.models.model_loader import check_model_id, load_model
 
 ORIGINAL_ATTACKS = {
-	0: {
+	'kwta': {
 		"attack": "CFoolboxPGDLinf",
-		"model_id": 0,
+		"model_id": 'kwta',
 		"attack_params": {
 			"y_target": None,
 			"epsilons": 0.031,
@@ -18,12 +18,11 @@ ORIGINAL_ATTACKS = {
 			"random_start": False,
 			"steps": 50
 		},
-		"random_restarts": 5,
 	},
 
-	1: {
+	'distillation': {
 		"attack": "CFoolboxPGDLinf",
-		"model_id": 1,
+		"model_id": 'distillation',
 		"attack_params": {
 			"y_target": None,
 			"epsilons": 0.3,
@@ -31,12 +30,11 @@ ORIGINAL_ATTACKS = {
 			"random_start": False,
 			"steps": 50
 		},
-		"random_restarts": 5,
 	},
 
-	2: {
+	'pang': {
 		"attack": "CFoolboxPGDLinf",
-		"model_id": 2,
+		"model_id": 'pang',
 		"attack_params": {
 			"y_target": None,
 			"epsilons": 0.01,
@@ -44,13 +42,12 @@ ORIGINAL_ATTACKS = {
 			"random_start": False,
 			"steps": 10
 		},
-		"random_restarts": 5,
 	},
 
-	3: {
+	'tws': {
 		"attack": "CFoolboxPGDLinf",
-		"model_id": 4,
-		"transfer": 3,
+		"model_id": "tws_no_reject",
+		"transfer": "tws",
 		"attack_params": {
 			"y_target": None,
 			"epsilons": 0.031,
@@ -58,29 +55,27 @@ ORIGINAL_ATTACKS = {
 			"random_start": False,
 			"steps": 50
 		},
-		"random_restarts": 5,
 	},
 }
 
 ADAPTIVE_ATTACKS = {
-	0: {
+	'kwta': {
 		"attack": "CFoolboxAveragedPGD",
-		"model_id": 0,
+		"model_id": 'kwta',
 		"attack_params": {
 			"y_target": None,
 			"epsilons": 0.031,
 			"abs_stepsize": 0.003,
 			"random_start": False,
 			"steps": 50,
-			"k": 200,
+			"k": 50,
 			"sigma": 0.031
 		},
-		"random_restarts": 5
 	},
 
-	1: {
+	'distillation': {
 		"attack": "CFoolboxLogitsPGD",
-		"model_id": 1,
+		"model_id": 'distillation',
 		"attack_params": {
 			"y_target": None,
 			"epsilons": 0.3,
@@ -88,12 +83,11 @@ ADAPTIVE_ATTACKS = {
 			"random_start": False,
 			"steps": 50
 		},
-		"random_restarts": 5
 	},
 
-	2: {
+	'pang': {
 		"attack": "CFoolboxPGDLinf",
-		"model_id": 2,
+		"model_id": 'pang',
 		"attack_params": {
 			"y_target": None,
 			"epsilons": 0.01,
@@ -101,12 +95,11 @@ ADAPTIVE_ATTACKS = {
 			"random_start": False,
 			"steps": 50
 		},
-		"random_restarts": 5,
 	},
 
-	3: {
+	'tws': {
 		"attack": "CFoolboxPGDLinfAdaptive",
-		"model_id": 3,
+		"model_id": "tws",
 		"attack_params": {
 			"y_target": None,
 			"epsilons": 0.031,
@@ -114,23 +107,22 @@ ADAPTIVE_ATTACKS = {
 			"random_start": False,
 			"steps": 50
 		},
-		"random_restarts": 5,
 	},
 }
 
 AUTO_PGD_ATTACKS = {
-	0: {
+	'kwta': {
 		"attack": "CAutoAttackAPGDDLR",
-		"model_id": 0,
+		"model_id": 'kwta',
 		"attack_params": {
 			"dmax": 0.031,
 			"y_target": None,
 			"epsilons": False,
 			"version": "plus"},
 	},
-	1: {
+	'distillation': {
 		"attack": "CAutoAttackAPGDDLR",
-		"model_id": 1,
+		"model_id": 'distillation',
 		"attack_params": {
 			"dmax": 0.3,
 			"y_target": None,
@@ -138,10 +130,10 @@ AUTO_PGD_ATTACKS = {
 			"version": "plus"
 		},
 	},
-	2:
+	'pang':
 		{
 			"attack": "CAutoAttackAPGDDLR",
-			"model_id": 2,
+			"model_id": 'pang',
 			"attack_params": {
 				"dmax": 0.031,
 				"y_target": None,
@@ -149,10 +141,9 @@ AUTO_PGD_ATTACKS = {
 				"version": "plus",
 			}
 		},
-	3: {
+	'tws': {
 		"attack": "CAutoAttackAPGDDLR",
-		"model_id": 4,
-		"transfer": 3,
+		"model_id": 'tws',
 		"attack_params": {
 			"dmax": 0.031,
 			"y_target": None,

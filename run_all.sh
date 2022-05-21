@@ -1,5 +1,5 @@
-for MODEL in 0 1 2 3
+for MODEL in kwta distillation pang tws
 do
     echo "Computing indicators for model $MODEL"
-    python3 -m src.ioaf_demo --model $MODEL --samples 10
+    python3 -m src.ioaf_demo --model $MODEL --samples 2
 done

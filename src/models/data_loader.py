@@ -7,16 +7,13 @@ from src.models.ensemble_diversity.load_ensemble import reshape_cifar10
 from src.models.model_loader import check_model_id
 
 
-def load_data(model_id: int, n_samples: int = 100):
+def load_data(model_id: str, n_samples: int = 100):
 	check_model_id(model_id)
 
-	if model_id == 1:
+	if model_id == 'distillation':
 		return _load_mnist_for_distillation(n_samples)
-	if model_id == 0 or model_id == 3 or model_id == 4:
-		return _load_cifar_regular(n_samples)
 	else:
-		return _load_cifar_ensemble(n_samples)
-
+		return _load_cifar_regular(n_samples)
 
 def _load_mnist_for_distillation(n_samples: int):
 	ts = CDataLoaderMNIST().load('testing')
@@ -33,6 +30,7 @@ def _load_cifar_regular(n_samples: int):
 
 
 def _load_cifar_ensemble(n_samples: int):
+	# needed for tf models
 	_, ts = CDataLoaderCIFAR10().load()
 	ts = random_sample(ts, n_samples)
 	reshaped_pts = reshape_cifar10(ts)

@@ -104,21 +104,22 @@ def unstable_predictions_indicator(attack: CAttackEvasion, x: CArray, y: CArray,
     return metric
 
 
-def silent_success_indicator(scores: np.ndarray, y0: int, adv_y: int, y_target: int = None) -> bool:
+def silent_success_indicator(attack: CAttackEvasion, y0: int, adv_y: int) -> bool:
     """
     Computes the presence of adversarial examples in the path.
-    :param scores: the scores of the attack path, computed against the target
+    :param attack: the attack to use for the evaluation
     :param y0: the real label
-    :param y_target: the target label of the attack. None for untargeted
     :param adv_y: the label after the attack
     :return: the silent success indicator
     """
+    scores = attack.classifier.predict(attack.x_seq)
+    y_target = attack.y_target
     if y_target is None:
-        scores_success = np.argmax(scores, axis=1) != y0
+        scores_success = scores.argmax(axis=1) != y0
     else:
-        scores_success = np.argmax(scores, axis=1) == y_target
+        scores_success = scores.argmax(axis=1) == y_target
     attack_success = adv_y != y0 if y_target is None else adv_y == y_target
-    return not attack_success and np.any(scores_success[:-1]).item()
+    return not attack_success and scores_success[:-1].sum() == 0
 
 
 def always_decreasing(x):
@@ -201,8 +202,7 @@ def unconstrained_attack_failure_indicator(x, y, attack: CAttackEvasion) -> floa
             failed[i] = 0.0
             continue
         adv_label, scores, _, _ = attack.run(x_i, y_i)
-        scores_in_path = attack.classifier.decision_function(attack.x_seq).tondarray()
-        silent = silent_success_indicator(scores_in_path, y0=y_i.item(), adv_y=adv_label, y_target=None)
+        silent = silent_success_indicator(attack, y0=y_i.item(), adv_y=adv_label)
         failed[i] = float(not silent and (adv_label == y_pred or adv_label == -1).item())
     sanity_check_metric = failed.mean().item()
     return sanity_check_metric
@@ -237,7 +237,7 @@ def compute_indicators(attack, x, y, clf, transfer_clf, is_patched=False) -> pd.
     :return: a dataframe with all the values of the indicators
     """
     # run attack
-    y_adv, scores, adv_ds, f_opt = attack.run(x, y)
+    y_adv, _, adv_ds, f_opt = attack.run(x, y)
 
     # get information required for computing the indicators
     y_real = CArray(attack._y0)
@@ -249,7 +249,7 @@ def compute_indicators(attack, x, y, clf, transfer_clf, is_patched=False) -> pd.
     # compute indicators
     unavailable_gradients = unavailable_gradients_indicator(clf, attack, x)
     unstable_predictions = unstable_predictions_indicator(attack, x, y)
-    silent_success = silent_success_indicator(scores, y, y_adv, None)  # can be switched to targeted as well
+    silent_success = silent_success_indicator(attack, y, y_adv)  # can be switched to targeted as well
     incomplete_optimization = incomplete_optimization_indicator(attacker_loss)
     transfer_failure = transfer_failure_indicator(transfer_scores, y_adv) \
         if transfer_scores is not None else False
