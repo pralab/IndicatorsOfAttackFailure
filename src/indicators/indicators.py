@@ -93,7 +93,7 @@ def unstable_predictions_indicator(attack: CAttackEvasion, x: CArray, y: CArray,
     divide_reference[divide_reference == 0] = 1
     for i in range(gamma):
         random_directions = (torch.rand(x.shape, device=device) - 0.5) * radius
-        x_perturbed = as_tensor(x) + random_directions
+        x_perturbed = as_tensor(x) + random_directions.to(device)
         if isinstance(attack, CFoolboxAveragedPGD):
             x_sigma = x_perturbed.repeat_interleave(attack.k, dim=0)
             noise = (torch.rand(x_sigma.shape, device=device) - 0.5) * attack.sigma
