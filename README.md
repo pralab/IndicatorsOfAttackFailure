@@ -26,8 +26,8 @@ The indicators will be stored as `.csv` files in the `results` directory.
 * Distillation: adapted from the code found at [https://github.com/carlini/nn_robust_attacks](https://github.com/carlini/nn_robust_attacks)
 * Ensemble Diversity: [https://github.com/P2333/Adaptive-Diversity-Promoting](https://github.com/P2333/Adaptive-Diversity-Promoting)
 * TWS: adapted from [https://github.com/s-huu/TurningWeaknessIntoStrength](https://github.com/s-huu/TurningWeaknessIntoStrength)
-* Input Transformations:
-* JPEG-Compression:
+* Input Transformations: adapted from the code found at [https://github.com/eth-sri/adaptive-auto-attack](https://github.com/eth-sri/adaptive-auto-attack)
+* JPEG-Compression: adapted from the code found at [https://github.com/eth-sri/adaptive-auto-attack](https://github.com/eth-sri/adaptive-auto-attack)
 * DNR: [https://secml.readthedocs.io/en/stable/tutorials/12-DNR.html](https://secml.readthedocs.io/en/stable/tutorials/12-DNR.html)
 * Standard: standard model from [https://robustbench.github.io/](https://robustbench.github.io/)
 * Adversarial Training: Engstrom2019Robustness model from [https://robustbench.github.io/](https://robustbench.github.io/)
