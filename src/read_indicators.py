@@ -2,7 +2,7 @@ import os
 
 import pandas as pd
 
-results_dir = 'src/results'
+results_dir = os.path.join(os.path.dirname(__file__), 'results')
 
 indicators_data = []
 for f in os.listdir(results_dir):

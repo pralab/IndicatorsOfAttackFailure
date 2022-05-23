@@ -7,4 +7,7 @@ torch
 torchvision
 tensorflow
 pandas
+kornia
+foolbox==3.3.2
+torchdiffeq
 git+https://github.com/RobustBench/robustbench
