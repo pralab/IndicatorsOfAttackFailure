@@ -16,11 +16,11 @@ device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
 def _extract_input_shape(model: CClassifier):
     if isinstance(model, CClassifierDNR):
-        return 1, 3, 32, 32
+        return (1, 3, 32, 32)
     elif isinstance(model, CClassifierRejectThreshold):
-        return 1, *model._clf.input_shape
+        return (1, *model._clf.input_shape)
     else:
-        return 1, *model.input_shape
+        return (1, *model.input_shape)
 
 
 def interrupted_computational_graph_metric(model: CClassifier) -> bool:
