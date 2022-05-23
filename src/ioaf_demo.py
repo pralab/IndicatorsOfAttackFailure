@@ -79,6 +79,12 @@ if __name__ == '__main__':
     if not os.path.exists(base_path):
         os.mkdir(base_path)
 
+    all_indicators_orig_eval['model'] = model_id
+    all_indicators_patched_eval['model'] = model_id
+
+    all_indicators_orig_eval['version'] = 'orginal'
+    all_indicators_patched_eval['version'] = 'patched'
+
     all_indicators_orig_eval.to_csv(os.path.join(base_path, f'{model_id}_indicators_original_eval.csv'))
     all_indicators_patched_eval.to_csv(os.path.join(base_path, f'{model_id}_indicators_mitigation_eval.csv'))
 

@@ -1,7 +1,6 @@
 from secml.adv.attacks import CFoolboxPGDLinf
 
 from src.attacks.autoattack_wrapper import CAutoAttackAPGDCE, CAutoAttackAPGDDLR
-from src.attacks.autoattack_wrapper.wrapper.autoattack_apgd_attack import CAutoAttackAPGDDLRAdaptive
 from src.attacks.pgd_adaptive import CFoolboxPGDLinfAdaptive
 from src.attacks.pgd_logits import CFoolboxLogitsPGD
 from src.attacks.smoothed_pgd import CFoolboxAveragedPGD
@@ -160,7 +159,6 @@ ATTACK_CLASSES = {
 	'CFoolboxPGDLinfAdaptive': CFoolboxPGDLinfAdaptive,
 	'CAutoAttackAPGDCE': CAutoAttackAPGDCE,
 	'CAutoAttackAPGDDLR': CAutoAttackAPGDDLR,
-	'CAutoAttackAPGDDLRAdaptive': CAutoAttackAPGDDLRAdaptive,
 }
 
 

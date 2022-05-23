@@ -2,14 +2,12 @@ from abc import ABCMeta
 
 import torch
 from numpy import NaN
+from secml.adv.attacks import CAttackEvasion
 
-from secml.adv.attacks.evasion import CAttackEvasion
 from .secml_autoattack_autograd import AutoattackSecmlLayer, as_tensor, \
     as_carray
-from secml.array import CArray
-from secml.settings import SECML_PYTORCH_USE_CUDA
 
-use_cuda = torch.cuda.is_available() and SECML_PYTORCH_USE_CUDA
+use_cuda = torch.cuda.is_available()
 
 
 class CAttackEvasionAutoAttack(CAttackEvasion, metaclass=ABCMeta):

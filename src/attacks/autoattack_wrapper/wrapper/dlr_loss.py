@@ -1,6 +1,9 @@
 import torch
 
+from secml.array import CArray
 from secml.settings import SECML_PYTORCH_USE_CUDA
+
+from src.attacks.autoattack_wrapper.wrapper.secml_autoattack_autograd import as_tensor
 
 use_cuda = torch.cuda.is_available() and SECML_PYTORCH_USE_CUDA
 
@@ -10,7 +13,12 @@ class DLRLossUntargeted:
         scores = self.model(x)
         y0 = torch.empty(scores.shape[0], dtype=torch.long,
                          device="cuda" if use_cuda else "cpu")
-        y0[:] = self._y0
+        if isinstance(self._y0, CArray):
+            labels = as_tensor(self._y0)
+        else:
+            labels = self._y0
+        y0[:] = labels
+        y0[y0 == -1] = 10
         scores_sorted, ind_sorted = scores.sort(dim=1)
         ind = (ind_sorted[:, -1] == y0).float()
         u = torch.arange(scores.shape[0])
