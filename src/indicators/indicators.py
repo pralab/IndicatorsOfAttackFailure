@@ -74,36 +74,41 @@ def unavailable_gradients_indicator(model: CClassifier, attack: CAttackEvasion, 
 def unstable_predictions_indicator(attack: CAttackEvasion, x: CArray, y: CArray, gamma: int = 100,
                                    radius: float = 8 / 255) -> float:
     attack._y0 = as_tensor(y) if isinstance(attack, CAttackEvasionFoolbox) else y
-    attack_ = attack.deepcopy()
-    if isinstance(attack_.classifier, CClassifierRejectThreshold):
-        attack_.classifier = attack_.classifier.clf
-    if isinstance(attack_, CFoolboxAveragedPGD):
-        xt = as_tensor(x).repeat_interleave(attack_.k, dim=0)
-        attack_._y0 = attack_._y0.repeat_interleave(attack_.k, dim=0)
-        noise = (torch.rand(xt.shape, device=device) - 0.5) * attack_.sigma
-        reference_loss = as_tensor(attack_.objective_function(as_carray(xt + noise)))
-        reference_loss = as_carray(reference_loss.view(attack_.k, x.shape[0]).mean(dim=0))
+
+    # we need to switch off the detector
+    clf_backup = attack.classifier
+    if isinstance(attack.classifier, CClassifierRejectThreshold):
+        attack.classifier = attack.classifier.clf
+    if isinstance(attack, CFoolboxAveragedPGD):
+        xt = as_tensor(x).repeat_interleave(attack.k, dim=0)
+        attack._y0 = attack._y0.repeat_interleave(attack.k, dim=0)
+        noise = (torch.rand(xt.shape, device=device) - 0.5) * attack.sigma
+        reference_loss = as_tensor(attack.objective_function(as_carray(xt + noise)))
+        reference_loss = as_carray(reference_loss.view(attack.k, x.shape[0]).mean(dim=0))
     else:
-        reference_loss = attack_.objective_function(x)
+        reference_loss = attack.objective_function(x)
     relative_increments = CArray.zeros((gamma, x.shape[0]))
     divide_reference = CArray(reference_loss.tondarray()).abs()
     divide_reference[divide_reference == 0] = 1
     for i in range(gamma):
         random_directions = (torch.rand(x.shape, device=device) - 0.5) * radius
         x_perturbed = as_tensor(x) + random_directions
-        if isinstance(attack_, CFoolboxAveragedPGD):
-            x_sigma = x_perturbed.repeat_interleave(attack_.k, dim=0)
-            noise = (torch.rand(x_sigma.shape, device=device) - 0.5) * attack_.sigma
-            avg_loss = as_tensor(attack_.objective_function(as_carray(x_sigma + noise)))
-            avg_loss = avg_loss.view(attack_.k, x.shape[0])
+        if isinstance(attack, CFoolboxAveragedPGD):
+            x_sigma = x_perturbed.repeat_interleave(attack.k, dim=0)
+            noise = (torch.rand(x_sigma.shape, device=device) - 0.5) * attack.sigma
+            avg_loss = as_tensor(attack.objective_function(as_carray(x_sigma + noise)))
+            avg_loss = avg_loss.view(attack.k, x.shape[0])
             losses = as_carray(avg_loss.mean(dim=0))
         else:
-            losses = attack_.objective_function(as_carray(x_perturbed))
+            losses = attack.objective_function(as_carray(x_perturbed))
         relative_increment = CArray.abs(reference_loss - losses)
         relative_increment /= divide_reference
         relative_increments[i, :] = relative_increment
     metric = relative_increments.mean()
     metric = min(metric, 1.0)
+
+    # set again the original clf
+    attack._classifier = clf_backup
     return metric
 
 
