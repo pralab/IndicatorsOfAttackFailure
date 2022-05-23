@@ -2,13 +2,19 @@ import numpy as np
 import pandas as pd
 import torch
 from secml.adv.attacks import CAttackEvasion, CAttackEvasionFoolbox
-from secml.adv.attacks.evasion.foolbox.secml_autograd import as_tensor, as_carray
+from secml.adv.attacks.evasion.foolbox.secml_autograd import as_carray
 from secml.array import CArray
 from secml.core.constants import inf
 from secml.ml import CClassifier
 from secml.ml.classifiers.reject import CClassifierRejectThreshold, CClassifierDNR
 
 from src.attacks.smoothed_pgd import CFoolboxAveragedPGD
+
+def as_tensor(x, requires_grad=False, tensor_type=None, device='cuda' if torch.cuda.is_available() else 'cpu'):
+    x = torch.from_numpy(x.tondarray().copy()).view(x.input_shape)
+    x = x.type(x.dtype if tensor_type is None else tensor_type)
+    x.requires_grad = requires_grad
+    return x.to(device)
 
 REJECT_CLASSES = [-1, 10]
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
@@ -93,7 +99,7 @@ def unstable_predictions_indicator(attack: CAttackEvasion, x: CArray, y: CArray,
     divide_reference[divide_reference == 0] = 1
     for i in range(gamma):
         random_directions = (torch.rand(x.shape, device=device) - 0.5) * radius
-        x_perturbed = as_tensor(x) + random_directions.to(device)
+        x_perturbed = as_tensor(x) + random_directions
         if isinstance(attack, CFoolboxAveragedPGD):
             x_sigma = x_perturbed.repeat_interleave(attack.k, dim=0)
             noise = (torch.rand(x_sigma.shape, device=device) - 0.5) * attack.sigma
