@@ -4,6 +4,7 @@ foolbox
 secml
 eagerpy
 torch
+torchvision
 tensorflow
 pandas
 git+https://github.com/RobustBench/robustbench

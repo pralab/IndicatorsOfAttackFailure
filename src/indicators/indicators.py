@@ -78,7 +78,8 @@ def unstable_predictions_indicator(attack: CAttackEvasion, x: CArray, y: CArray,
     # we need to switch off the detector
     clf_backup = attack.classifier
     if isinstance(attack.classifier, CClassifierRejectThreshold):
-        attack.classifier = attack.classifier.clf
+        # The rejection is not part of the prediction, hence it is not considered by this indicator
+        attack._classifier = attack.classifier.clf
     if isinstance(attack, CFoolboxAveragedPGD):
         xt = as_tensor(x).repeat_interleave(attack.k, dim=0)
         attack._y0 = attack._y0.repeat_interleave(attack.k, dim=0)
